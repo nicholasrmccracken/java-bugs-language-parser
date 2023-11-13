@@ -64,42 +64,48 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 && tokens.front().equals("IF") : ""
                 + "Violation of: <\"IF\"> is proper prefix of tokens";
 
+        // First token is IF verified via assert
         tokens.dequeue();
 
-        Reporter.assertElseFatalError(tokens.length() > 0,
-                "Statement ends early");
-
+        // Ensure condition is a valid BL condition
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && Tokenizer.isCondition(tokens.front()),
                 "Condition is not a valid BL condition");
 
+        // Store condition to later use when assembling if statement
         Condition c = parseCondition(tokens.dequeue());
 
+        // Check for THEN keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("THEN"),
                 "Expected keyword THEN");
 
+        // Store parsed if label
         Statement ifLabel = s.newInstance();
         ifLabel.parseBlock(tokens);
 
+        // Ensure there are available tokens to check for else label
         Reporter.assertElseFatalError(tokens.length() > 0,
                 "Statement ends early");
 
         if (tokens.front().equals("ELSE")) {
             tokens.dequeue();
 
+            // Store parsed else label
             Statement elseLabel = s.newInstance();
             elseLabel.parseBlock(tokens);
 
+            // Assemble if else statement since else label exists
             s.assembleIfElse(c, ifLabel, elseLabel);
         } else {
+            // Assemble if statement since else label does not exist
             s.assembleIf(c, ifLabel);
         }
 
+        // Check END and IF keywords
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("END"),
                 "Expected keyword END");
-
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("IF"),
                 "Expected keyword IF");
@@ -132,29 +138,35 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 && tokens.front().equals("WHILE") : ""
                 + "Violation of: <\"WHILE\"> is proper prefix of tokens";
 
+        // First token is WHILE verified via assert
         tokens.dequeue();
 
+        // Ensure condition is a valid BL condition
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && Tokenizer.isCondition(tokens.front()),
                 "Condition is not a valid BL condition");
 
+        // Store condition to later use when assembling if statement
         Condition c = parseCondition(tokens.dequeue());
 
+        // Check for DO keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("DO"),
                 "Expected keyword DO");
 
+        // Store parsed while label
         Statement label = s.newInstance();
         label.parseBlock(tokens);
 
+        // Check END and IF keywords
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("END"),
                 "Expected keyword END");
-
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("WHILE"),
                 "Expected keyword WHILE");
 
+        // Assemble while statement
         s.assembleWhile(c, label);
     }
 
@@ -181,6 +193,10 @@ public final class Statement1Parse1 extends Statement1 {
                 && Tokenizer.isIdentifier(tokens.front()) : ""
                         + "Violation of: identifier string is proper prefix of tokens";
 
+        /*
+         * Assemble call statement since first token is an identifier verified
+         * via assert
+         */
         s.assembleCall(tokens.dequeue());
     }
 
@@ -207,6 +223,10 @@ public final class Statement1Parse1 extends Statement1 {
 
         String kind = tokens.front();
 
+        /*
+         * Call parse method with respect to the kind of statement and store in
+         * statement this since parse is an instance method
+         */
         if (kind.equals("IF")) {
             parseIf(tokens, this);
         } else if (kind.equals("WHILE")) {
@@ -214,6 +234,12 @@ public final class Statement1Parse1 extends Statement1 {
         } else if (Tokenizer.isIdentifier(kind)) {
             parseCall(tokens, this);
         } else {
+            /*
+             * Since method is public, could be called by classes which extend
+             * this class so an invalid keyword case must be explicitly guarded
+             * against despite being accounted for in its only use within this
+             * class by parseBlock
+             */
             Reporter.fatalErrorToConsole("Statement has invalid kind keyword");
         }
 
@@ -225,23 +251,32 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
+        // First token must exist via assert
         String kind = tokens.front();
         Statement label = this.newInstance();
 
+        /*
+         * Continue iterating through block's children until the front token is
+         * not a valid kind
+         */
         while (kind.equals("IF") || kind.equals("WHILE")
                 || Tokenizer.isIdentifier(kind)) {
 
+            /*
+             * Parse statement and add to block
+             */
             Statement child = this.newInstance();
             child.parse(tokens);
-
             label.addToBlock(label.lengthOfBlock(), child);
 
+            // Ensure there are available tokens to check for children
             Reporter.assertElseFatalError(tokens.length() > 0,
                     "Statement ends early");
 
             kind = tokens.front();
         }
 
+        // Replace this with newly formed block statement
         this.transferFrom(label);
     }
 
