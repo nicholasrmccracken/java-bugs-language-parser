@@ -1,3 +1,4 @@
+import components.map.Map;
 import components.program.Program;
 import components.program.Program1;
 import components.queue.Queue;
@@ -6,12 +7,13 @@ import components.simplereader.SimpleReader1L;
 import components.simplewriter.SimpleWriter;
 import components.simplewriter.SimpleWriter1L;
 import components.statement.Statement;
+import components.utilities.Reporter;
 import components.utilities.Tokenizer;
 
 /**
  * Layered implementation of secondary method {@code parse} for {@code Program}.
  *
- * @author Put your name here
+ * @author Nicholas McCracken and Jack Mikesell
  *
  */
 public final class Program1Parse1 extends Program1 {
@@ -56,10 +58,39 @@ public final class Program1Parse1 extends Program1 {
         assert tokens.length() > 0 && tokens.front().equals("INSTRUCTION") : ""
                 + "Violation of: <\"INSTRUCTION\"> is proper prefix of tokens";
 
-        // TODO - fill in body
+        // First token is INSTRUCTION verified via assert
+        tokens.dequeue();
 
-        // This line added just to make the program compilable.
-        return null;
+        // Ensure there are available tokens to dequeue
+        Reporter.assertElseFatalError(tokens.length() > 0,
+                "Program ends early");
+
+        // Store beginning name of instruction to check against ending name later
+        String name = tokens.dequeue();
+
+        // Ensure instruction does not equal name of primtive instruction
+        Reporter.assertElseFatalError(!Tokenizer.isCondition(name),
+                "Instruction shares name with primitive instruction");
+
+        // Check for IS keyword
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("IS"),
+                "Expected token IS");
+
+        // Store the parsed block in the body parameter
+        body.parseBlock(tokens);
+
+        // Check for END keyword
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("END"),
+                "Expected token END");
+
+        // Ensure beginning name of instruction does not equal ending name
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals(name),
+                "Beginning name of instruction does not match ending name");
+
+        return name;
     }
 
     /*
@@ -91,8 +122,68 @@ public final class Program1Parse1 extends Program1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
-        // TODO - fill in body
+        Reporter.assertElseFatalError(tokens.dequeue().equals("PROGRAM"),
+                "Expected token PROGRAM");
 
+        // Store beginning name of program to check against ending name later
+        String programName = tokens.dequeue();
+
+        // Check for IS keyword
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("IS"),
+                "Expected token IS");
+
+        // Ensure there are available tokens to check for instructions
+        Reporter.assertElseFatalError(tokens.length() > 0,
+                "Program ends early");
+
+        Map<String, Statement> context = this.newContext();
+
+        // Continue adding to the context while there are instructions available
+        while (tokens.front().equals("INSTRUCTION")) {
+            Statement instruction = this.newBody();
+            String instructionName = parseInstruction(tokens, instruction);
+
+            // Ensure each instruction has a unique name
+            Reporter.assertElseFatalError(!context.hasKey(instructionName),
+                    "Instruction name is not unqiue");
+
+            context.add(instructionName, instruction);
+
+            // Ensure there are available tokens to check for instructions
+            Reporter.assertElseFatalError(tokens.length() > 0,
+                    "Program ends early");
+        }
+
+        // Check for BEGIN keyword
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("BEGIN"),
+                "Expected token BEGIN");
+
+        // Store the parsed block as the body
+        Statement body = this.newBody();
+        body.parseBlock(tokens);
+
+        // Check for IS keyword
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("END"),
+                "Expected token END");
+
+        // Ensure beginning name of program does not equal ending name
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals(programName),
+                "Beginning name of program does not match ending name");
+
+        // Ensure there are no further tokens after the END keyword
+        Reporter.assertElseFatalError(
+                tokens.length() == 1
+                        && tokens.front().equals(Tokenizer.END_OF_INPUT),
+                "Program has unexpected a suffix of tokens");
+
+        // Repopulate program with it's name, context, and body
+        this.setName(programName);
+        this.swapContext(context);
+        this.swapBody(body);
     }
 
     /*
