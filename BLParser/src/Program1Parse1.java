@@ -61,21 +61,18 @@ public final class Program1Parse1 extends Program1 {
         // First token is INSTRUCTION verified via assert
         tokens.dequeue();
 
-        // Ensure there are available tokens to dequeue
-        Reporter.assertElseFatalError(tokens.length() > 0,
-                "Program ends early");
+        // Ensure instruction does not equal name of primitive instruction
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && Tokenizer.isIdentifier(tokens.front()),
+                "Instruction shares name with primitive instruction");
 
         // Store beginning name of instruction to check against ending name later
         String name = tokens.dequeue();
 
-        // Ensure instruction does not equal name of primtive instruction
-        Reporter.assertElseFatalError(!Tokenizer.isCondition(name),
-                "Instruction shares name with primitive instruction");
-
         // Check for IS keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("IS"),
-                "Expected token IS");
+                "Expected keyword IS");
 
         // Store the parsed block in the body parameter
         body.parseBlock(tokens);
@@ -83,7 +80,7 @@ public final class Program1Parse1 extends Program1 {
         // Check for END keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("END"),
-                "Expected token END");
+                "Expected keyword END");
 
         // Ensure beginning name of instruction does not equal ending name
         Reporter.assertElseFatalError(
@@ -122,8 +119,14 @@ public final class Program1Parse1 extends Program1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
+        // Check for PROGRAM keyword
         Reporter.assertElseFatalError(tokens.dequeue().equals("PROGRAM"),
-                "Expected token PROGRAM");
+                "Expected keyword PROGRAM");
+
+        // Ensure program name does not equal name of primitive instruction
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && Tokenizer.isIdentifier(tokens.front()),
+                "Program name is invalid");
 
         // Store beginning name of program to check against ending name later
         String programName = tokens.dequeue();
@@ -131,7 +134,7 @@ public final class Program1Parse1 extends Program1 {
         // Check for IS keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("IS"),
-                "Expected token IS");
+                "Expected keyword IS");
 
         // Ensure there are available tokens to check for instructions
         Reporter.assertElseFatalError(tokens.length() > 0,
@@ -158,7 +161,7 @@ public final class Program1Parse1 extends Program1 {
         // Check for BEGIN keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("BEGIN"),
-                "Expected token BEGIN");
+                "Expected keyword BEGIN");
 
         // Store the parsed block as the body
         Statement body = this.newBody();
@@ -167,7 +170,7 @@ public final class Program1Parse1 extends Program1 {
         // Check for IS keyword
         Reporter.assertElseFatalError(
                 tokens.length() > 0 && tokens.dequeue().equals("END"),
-                "Expected token END");
+                "Expected keyword END");
 
         // Ensure beginning name of program does not equal ending name
         Reporter.assertElseFatalError(
@@ -177,7 +180,7 @@ public final class Program1Parse1 extends Program1 {
         // Ensure there are no further tokens after the END keyword
         Reporter.assertElseFatalError(
                 tokens.length() == 1
-                        && tokens.front().equals(Tokenizer.END_OF_INPUT),
+                        && tokens.dequeue().equals(Tokenizer.END_OF_INPUT),
                 "Program has unexpected a suffix of tokens");
 
         // Repopulate program with it's name, context, and body
