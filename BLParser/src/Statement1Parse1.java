@@ -5,6 +5,7 @@ import components.simplewriter.SimpleWriter;
 import components.simplewriter.SimpleWriter1L;
 import components.statement.Statement;
 import components.statement.Statement1;
+import components.utilities.Reporter;
 import components.utilities.Tokenizer;
 
 /**
@@ -63,8 +64,45 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 && tokens.front().equals("IF") : ""
                 + "Violation of: <\"IF\"> is proper prefix of tokens";
 
-        // TODO - fill in body
+        tokens.dequeue();
 
+        Reporter.assertElseFatalError(tokens.length() > 0,
+                "Statement ends early");
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && Tokenizer.isCondition(tokens.front()),
+                "Condition is not a valid BL condition");
+
+        Condition c = parseCondition(tokens.dequeue());
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("THEN"),
+                "Expected keyword THEN");
+
+        Statement ifLabel = s.newInstance();
+        ifLabel.parseBlock(tokens);
+
+        Reporter.assertElseFatalError(tokens.length() > 0,
+                "Statement ends early");
+
+        if (tokens.front().equals("ELSE")) {
+            tokens.dequeue();
+
+            Statement elseLabel = s.newInstance();
+            elseLabel.parseBlock(tokens);
+
+            s.assembleIfElse(c, ifLabel, elseLabel);
+        } else {
+            s.assembleIf(c, ifLabel);
+        }
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("END"),
+                "Expected keyword END");
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("IF"),
+                "Expected keyword IF");
     }
 
     /**
@@ -94,8 +132,30 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 && tokens.front().equals("WHILE") : ""
                 + "Violation of: <\"WHILE\"> is proper prefix of tokens";
 
-        // TODO - fill in body
+        tokens.dequeue();
 
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && Tokenizer.isCondition(tokens.front()),
+                "Condition is not a valid BL condition");
+
+        Condition c = parseCondition(tokens.dequeue());
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("DO"),
+                "Expected keyword DO");
+
+        Statement label = s.newInstance();
+        label.parseBlock(tokens);
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("END"),
+                "Expected keyword END");
+
+        Reporter.assertElseFatalError(
+                tokens.length() > 0 && tokens.dequeue().equals("WHILE"),
+                "Expected keyword WHILE");
+
+        s.assembleWhile(c, label);
     }
 
     /**
@@ -121,8 +181,7 @@ public final class Statement1Parse1 extends Statement1 {
                 && Tokenizer.isIdentifier(tokens.front()) : ""
                         + "Violation of: identifier string is proper prefix of tokens";
 
-        // TODO - fill in body
-
+        s.assembleCall(tokens.dequeue());
     }
 
     /*
@@ -146,7 +205,17 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
-        // TODO - fill in body
+        String kind = tokens.front();
+
+        if (kind.equals("IF")) {
+            parseIf(tokens, this);
+        } else if (kind.equals("WHILE")) {
+            parseWhile(tokens, this);
+        } else if (Tokenizer.isIdentifier(kind)) {
+            parseCall(tokens, this);
+        } else {
+            Reporter.fatalErrorToConsole("Statement has invalid kind keyword");
+        }
 
     }
 
@@ -156,8 +225,24 @@ public final class Statement1Parse1 extends Statement1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
-        // TODO - fill in body
+        String kind = tokens.front();
+        Statement label = this.newInstance();
 
+        while (kind.equals("IF") || kind.equals("WHILE")
+                || Tokenizer.isIdentifier(kind)) {
+
+            Statement child = this.newInstance();
+            child.parse(tokens);
+
+            label.addToBlock(label.lengthOfBlock(), child);
+
+            Reporter.assertElseFatalError(tokens.length() > 0,
+                    "Statement ends early");
+
+            kind = tokens.front();
+        }
+
+        this.transferFrom(label);
     }
 
     /*
