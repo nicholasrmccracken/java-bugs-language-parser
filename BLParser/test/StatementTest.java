@@ -29,7 +29,15 @@ public abstract class StatementTest {
             FILE_NAME_8 = "test/statement-sample-8.bl",
             FILE_NAME_9 = "test/statement-sample-9.bl",
             FILE_NAME_10 = "test/statement-sample-10.bl",
-            FILE_NAME_11 = "test/statement-sample-11.bl";
+            FILE_NAME_11 = "test/statement-sample-11.bl",
+            FILE_NAME_12 = "test/statement-sample-12.bl",
+            FILE_NAME_13 = "test/statement-sample-13.bl",
+            FILE_NAME_14 = "test/statement-sample-14.bl",
+            FILE_NAME_15 = "test/statement-sample-15.bl",
+            FILE_NAME_16 = "test/statement-sample-16.bl",
+            FILE_NAME_17 = "test/statement-sample-17.bl",
+            FILE_NAME_18 = "test/statement-sample-18.bl",
+            FILE_NAME_19 = "test/statement-sample-19.bl";
 
     /**
      * Invokes the {@code Statement} constructor for the implementation under
@@ -297,6 +305,158 @@ public abstract class StatementTest {
          */
         Statement sTest = this.constructorTest();
         SimpleReader file = new SimpleReader1L(FILE_NAME_11);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Invalid bl condition for
+     * WHILE.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError6() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_12);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "DO" at beginning
+     * of while loop.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError7() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_13);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "END" at the end of
+     * a while loop.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError8() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_14);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "WHILE" at the end
+     * of a while loop.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError9() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_15);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Invalid kind keyword
+     * ("WHOLE" instead of "WHILE").
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError10() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_16);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Extra lines of text after
+     * the statement has ended.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError11() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_17);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. No lines of code in IF
+     * block.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError12() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_18);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. No lines of code in WHILE
+     * block.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError13() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_19);
         Queue<String> tokens = Tokenizer.tokens(file);
         file.close();
         /*
