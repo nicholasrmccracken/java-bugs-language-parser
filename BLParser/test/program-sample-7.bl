@@ -1,0 +1,18 @@
+PROGRAM Test IS
+
+	INSTRUCTION one IS
+		turnleft
+	END one
+	
+BEGIN
+	WHILE true DO
+		one
+		one
+		turnleft
+		infect
+		IF next-is-wall THEN
+			one
+		END IF
+		skip
+	END WHILE
+END Test

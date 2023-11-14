@@ -1,0 +1,27 @@
+PROGRAM Test IS
+
+    INSTRUCTION turnleft IS
+        WHILE next-is-empty DO
+            move
+        END WHILE
+    END turnleft
+
+    INSTRUCTION two IS
+        turnright
+        turnright
+    END two
+
+BEGIN
+    WHILE true DO
+        FindObstacle
+        IF next-is-enemy THEN
+            One
+        ELSE
+            IF next-is-wall THEN
+                turnleft
+            ELSE
+                Two
+            END IF
+        END IF
+    END WHILE
+END Test

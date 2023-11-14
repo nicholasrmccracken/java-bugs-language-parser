@@ -1,0 +1,14 @@
+IF next-is-enemy THEN
+	WHILE true DO
+	infect
+	turnleft
+	END WHILE
+	skip
+ELSE
+	move
+	IF next-is-not-enemy THEN
+	turnleft
+	move
+	turnright
+	END IF
+END IF

@@ -20,7 +20,16 @@ public abstract class StatementTest {
      * The name of a file containing a sequence of BL statements.
      */
     private static final String FILE_NAME_1 = "test/statement1.bl",
-            FILE_NAME_2 = "test/statement2.bl";
+            FILE_NAME_2 = "test/statement2.bl",
+            FILE_NAME_3 = "test/statement-sample-3.bl",
+            FILE_NAME_4 = "test/statement-sample-4.bl",
+            FILE_NAME_5 = "test/statement-sample-5.bl",
+            FILE_NAME_6 = "test/statement-sample-6.bl",
+            FILE_NAME_7 = "test/statement-sample-7.bl",
+            FILE_NAME_8 = "test/statement-sample-8.bl",
+            FILE_NAME_9 = "test/statement-sample-9.bl",
+            FILE_NAME_10 = "test/statement-sample-10.bl",
+            FILE_NAME_11 = "test/statement-sample-11.bl";
 
     /**
      * Invokes the {@code Statement} constructor for the implementation under
@@ -68,6 +77,141 @@ public abstract class StatementTest {
     }
 
     /**
+     * Test of parse on syntactically valid input.
+     */
+    @Test
+    public final void testParseValid2() {
+        /*
+         * Setup
+         */
+        Statement sRef = this.constructorRef();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_3);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        sRef.parse(tokens);
+        file.close();
+        Statement sTest = this.constructorTest();
+        file = new SimpleReader1L(FILE_NAME_3);
+        tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call
+         */
+        sTest.parse(tokens);
+        /*
+         * Evaluation
+         */
+        assertEquals(sRef, sTest);
+    }
+
+    /**
+     * Test of parse on syntactically valid input.
+     */
+    @Test
+    public final void testParseValid3() {
+        /*
+         * Setup
+         */
+        Statement sRef = this.constructorRef();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_4);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        sRef.parse(tokens);
+        file.close();
+        Statement sTest = this.constructorTest();
+        file = new SimpleReader1L(FILE_NAME_4);
+        tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call
+         */
+        sTest.parse(tokens);
+        /*
+         * Evaluation
+         */
+        assertEquals(sRef, sTest);
+    }
+
+    /**
+     * Test of parse on syntactically valid input.
+     */
+    @Test
+    public final void testParseValid4() {
+        /*
+         * Setup
+         */
+        Statement sRef = this.constructorRef();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_5);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        sRef.parse(tokens);
+        file.close();
+        Statement sTest = this.constructorTest();
+        file = new SimpleReader1L(FILE_NAME_5);
+        tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call
+         */
+        sTest.parse(tokens);
+        /*
+         * Evaluation
+         */
+        assertEquals(sRef, sTest);
+    }
+
+    /**
+     * Test of parse on syntactically valid input.
+     */
+    @Test
+    public final void testParseValid5() {
+        /*
+         * Setup
+         */
+        Statement sRef = this.constructorRef();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_6);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        sRef.parse(tokens);
+        file.close();
+        Statement sTest = this.constructorTest();
+        file = new SimpleReader1L(FILE_NAME_6);
+        tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call
+         */
+        sTest.parse(tokens);
+        /*
+         * Evaluation
+         */
+        assertEquals(sRef, sTest);
+    }
+
+    /**
+     * Test of parse on syntactically valid input.
+     */
+    @Test
+    public final void testParseValid6() {
+        /*
+         * Setup
+         */
+        Statement sRef = this.constructorRef();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_7);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        sRef.parse(tokens);
+        file.close();
+        Statement sTest = this.constructorTest();
+        file = new SimpleReader1L(FILE_NAME_7);
+        tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call
+         */
+        sTest.parse(tokens);
+        /*
+         * Evaluation
+         */
+        assertEquals(sRef, sTest);
+    }
+
+    /**
      * Test of parse on syntactically invalid input.
      */
     @Test(expected = RuntimeException.class)
@@ -77,6 +221,82 @@ public abstract class StatementTest {
          */
         Statement sTest = this.constructorTest();
         SimpleReader file = new SimpleReader1L(FILE_NAME_2);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Invalid bl condition for IF
+     * statement.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError2() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_8);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "THEN" for IF
+     * statement.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError3() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_9);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "END" at the end of
+     * IF statement.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError4() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_10);
+        Queue<String> tokens = Tokenizer.tokens(file);
+        file.close();
+        /*
+         * The call--should result in an error being caught
+         */
+        sTest.parse(tokens);
+    }
+
+    /**
+     * Test of parse on syntactically invalid input. Missing "IF" at the end of
+     * an IF statement.
+     */
+    @Test(expected = RuntimeException.class)
+    public final void testParseError5() {
+        /*
+         * Setup
+         */
+        Statement sTest = this.constructorTest();
+        SimpleReader file = new SimpleReader1L(FILE_NAME_11);
         Queue<String> tokens = Tokenizer.tokens(file);
         file.close();
         /*
