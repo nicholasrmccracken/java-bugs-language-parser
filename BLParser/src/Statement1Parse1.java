@@ -234,12 +234,6 @@ public final class Statement1Parse1 extends Statement1 {
         } else if (Tokenizer.isIdentifier(kind)) {
             parseCall(tokens, this);
         } else {
-            /*
-             * Since method is public, could be called by classes which extend
-             * this class so an invalid keyword case must be explicitly guarded
-             * against despite being accounted for in its only use within this
-             * class by parseBlock
-             */
             Reporter.fatalErrorToConsole("Statement has invalid kind keyword");
         }
 
@@ -275,6 +269,19 @@ public final class Statement1Parse1 extends Statement1 {
 
             kind = tokens.front();
         }
+
+        /*
+         * Explicitly guard against edge case where the block ends on an
+         * improper keyword by failing to recognize missing syntax. E.g. if
+         * statement missing an IF at the end followed by another if statement,
+         * where the program interprets the next if statement as the missing IF,
+         * the condition is interpreted as a call statement, and parseBlock
+         * incorrectly stops recursing on THEN token (see test ParseError5)
+         */
+        Reporter.assertElseFatalError(
+                tokens.front().equals("END") || tokens.front().equals("ELSE")
+                        || tokens.front().equals(Tokenizer.END_OF_INPUT),
+                "Statement ends on improper keyword");
 
         // Replace this with newly formed block statement
         this.transferFrom(label);

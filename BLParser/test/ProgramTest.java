@@ -419,7 +419,4 @@ public abstract class ProgramTest {
         pTest.parse(tokens);
     }
 
-    // TODO - add more test cases for valid inputs
-    // TODO - add more test cases for as many distinct syntax errors as possible
-
 }

@@ -34,10 +34,7 @@ public abstract class StatementTest {
             FILE_NAME_13 = "test/statement-sample-13.bl",
             FILE_NAME_14 = "test/statement-sample-14.bl",
             FILE_NAME_15 = "test/statement-sample-15.bl",
-            FILE_NAME_16 = "test/statement-sample-16.bl",
-            FILE_NAME_17 = "test/statement-sample-17.bl",
-            FILE_NAME_18 = "test/statement-sample-18.bl",
-            FILE_NAME_19 = "test/statement-sample-19.bl";
+            FILE_NAME_16 = "test/statement-sample-16.bl";
 
     /**
      * Invokes the {@code Statement} constructor for the implementation under
@@ -95,7 +92,7 @@ public abstract class StatementTest {
         Statement sRef = this.constructorRef();
         SimpleReader file = new SimpleReader1L(FILE_NAME_3);
         Queue<String> tokens = Tokenizer.tokens(file);
-        sRef.parse(tokens);
+        sRef.parseBlock(tokens);
         file.close();
         Statement sTest = this.constructorTest();
         file = new SimpleReader1L(FILE_NAME_3);
@@ -104,7 +101,7 @@ public abstract class StatementTest {
         /*
          * The call
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
         /*
          * Evaluation
          */
@@ -122,7 +119,7 @@ public abstract class StatementTest {
         Statement sRef = this.constructorRef();
         SimpleReader file = new SimpleReader1L(FILE_NAME_4);
         Queue<String> tokens = Tokenizer.tokens(file);
-        sRef.parse(tokens);
+        sRef.parseBlock(tokens);
         file.close();
         Statement sTest = this.constructorTest();
         file = new SimpleReader1L(FILE_NAME_4);
@@ -131,7 +128,7 @@ public abstract class StatementTest {
         /*
          * The call
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
         /*
          * Evaluation
          */
@@ -203,7 +200,7 @@ public abstract class StatementTest {
         Statement sRef = this.constructorRef();
         SimpleReader file = new SimpleReader1L(FILE_NAME_7);
         Queue<String> tokens = Tokenizer.tokens(file);
-        sRef.parse(tokens);
+        sRef.parseBlock(tokens);
         file.close();
         Statement sTest = this.constructorTest();
         file = new SimpleReader1L(FILE_NAME_7);
@@ -212,7 +209,7 @@ public abstract class StatementTest {
         /*
          * The call
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
         /*
          * Evaluation
          */
@@ -253,7 +250,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -272,7 +269,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -291,7 +288,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -310,7 +307,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -329,7 +326,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -348,7 +345,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -367,7 +364,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -386,7 +383,7 @@ public abstract class StatementTest {
         /*
          * The call--should result in an error being caught
          */
-        sTest.parse(tokens);
+        sTest.parseBlock(tokens);
     }
 
     /**
@@ -407,66 +404,5 @@ public abstract class StatementTest {
          */
         sTest.parse(tokens);
     }
-
-    /**
-     * Test of parse on syntactically invalid input. Extra lines of text after
-     * the statement has ended.
-     */
-    @Test(expected = RuntimeException.class)
-    public final void testParseError11() {
-        /*
-         * Setup
-         */
-        Statement sTest = this.constructorTest();
-        SimpleReader file = new SimpleReader1L(FILE_NAME_17);
-        Queue<String> tokens = Tokenizer.tokens(file);
-        file.close();
-        /*
-         * The call--should result in an error being caught
-         */
-        sTest.parse(tokens);
-    }
-
-    /**
-     * Test of parse on syntactically invalid input. No lines of code in IF
-     * block.
-     */
-    @Test(expected = RuntimeException.class)
-    public final void testParseError12() {
-        /*
-         * Setup
-         */
-        Statement sTest = this.constructorTest();
-        SimpleReader file = new SimpleReader1L(FILE_NAME_18);
-        Queue<String> tokens = Tokenizer.tokens(file);
-        file.close();
-        /*
-         * The call--should result in an error being caught
-         */
-        sTest.parse(tokens);
-    }
-
-    /**
-     * Test of parse on syntactically invalid input. No lines of code in WHILE
-     * block.
-     */
-    @Test(expected = RuntimeException.class)
-    public final void testParseError13() {
-        /*
-         * Setup
-         */
-        Statement sTest = this.constructorTest();
-        SimpleReader file = new SimpleReader1L(FILE_NAME_19);
-        Queue<String> tokens = Tokenizer.tokens(file);
-        file.close();
-        /*
-         * The call--should result in an error being caught
-         */
-        sTest.parse(tokens);
-    }
-
-    // TODO - add more test cases for valid inputs for both parse and parseBlock
-    // TODO - add more test cases for as many distinct syntax errors as possible
-    //        for both parse and parseBlock
 
 }
